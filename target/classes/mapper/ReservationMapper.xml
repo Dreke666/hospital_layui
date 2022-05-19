@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhang.hospital.dao.ReservationDao">
+
+
+    <resultMap id="reservationResultMap" type="com.zhang.hospital.entity.Reservation">
+        <id property="res_id" column="res_id"/>
+        <result property="status" column="status"/>
+        <result property="order_time" column="order_time"/>
+        <result property="create_time" column="create_time"/>
+        <result property="res_user_id" column="res_user_id"/>
+        <result property="res_doc_id" column="res_doc_id"/>
+
+        <association property="doctor" javaType="com.zhang.hospital.entity.Doctor">
+            <id property="doctor_id" column="doctor_id"/>
+            <result property="username" column="username"/>
+            <result property="gender" column="gender"/>
+            <result property="birthday" column="birthday"/>
+            <result property="createTime" column="createTime"/>
+            <result property="phone" column="phone"/>
+            <result property="email" column="email"/>
+            <result property="rank" column="rank"/>
+            <result property="address" column="address"/>
+            <result property="realname" column="realname"/>
+            <result property="depart_id" column="depart_id"/>
+            <result property="photo_path" column="photo_path"/>
+        </association>
+    </resultMap>
+
+
+
+    <resultMap id="reservationDocResultMap" type="com.zhang.hospital.entity.Reservation">
+        <id property="res_id" column="res_id"/>
+        <result property="status" column="status"/>
+        <result property="order_time" column="order_time"/>
+        <result property="create_time" column="create_time"/>
+        <result property="res_user_id" column="res_user_id"/>
+        <result property="res_doc_id" column="res_doc_id"/>
+
+        <association property="user" javaType="com.zhang.hospital.entity.User">
+            <id property="user_id" column="user_id"/>
+            <result property="gender" column="gender"/>
+            <result property="levelId" column="levelId"/>
+            <result property="realname" column="realname"/>
+            <result property="photo_path" column="photo_path"/>
+        </association>
+    </resultMap>
+
+    <insert id="addReservation" parameterType="com.zhang.hospital.entity.Reservation">
+
+        insert  into tb_reservation(status,order_time,create_time,res_user_id,
+        res_doc_id) values (#{status},#{order_time},#{create_time},#{res_user_id},
+        #{res_doc_id})
+    </insert>
+
+    <select id="getAllMyReservationList" resultMap="reservationResultMap">
+
+        select  * from tb_doctor,tb_reservation
+        where res_user_id=#{user_id} and tb_reservation.status=1
+        and tb_reservation.res_doc_id=tb_doctor.doctor_id
+    </select>
+
+
+
+
+    <select id="getDoctorResList" resultMap="reservationDocResultMap">
+
+        select  * from tb_user,tb_reservation
+        where res_doc_id=#{doctor_id} and tb_reservation.status=1
+        and tb_reservation.res_user_id=tb_user.user_id
+    </select>
+
+
+    <select id="getDoctorResDoneList" resultMap="reservationDocResultMap">
+
+        select  * from tb_user,tb_reservation
+        where res_doc_id=#{doctor_id} and tb_reservation.status=2
+        and tb_reservation.res_user_id=tb_user.user_id
+    </select>
+
+    <select id="getResByResId" resultType="com.zhang.hospital.entity.Reservation">
+        select * from tb_reservation where res_id=#{res_id}
+    </select>
+
+
+    <update id="updateRes" parameterType="com.zhang.hospital.entity.Reservation">
+        update tb_reservation
+        <set>
+            <if test="status!=null">
+                status=#{status},
+            </if>
+            <if test="order_time!=null">
+                order_time=#{order_time},
+            </if>
+            <if test="create_time!=null">
+                create_time=#{create_time},
+            </if>
+            <if test="res_user_id!=null">
+                res_user_id=#{res_user_id},
+            </if>
+            <if test="res_doc_id!=null">
+                res_doc_id=#{res_doc_id},
+            </if>
+        </set>
+        where  res_id=#{res_id}
+    </update>
+
+
+
+</mapper>

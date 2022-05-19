@@ -1,0 +1,52 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhang.hospital.dao.MenuDao">
+    <update id="updateMenuByKey" parameterType="com.zhang.hospital.entity.Menu">
+        update menu
+        <set>
+            <if test="sorting!=null">
+                sorting=#{sorting}
+            </if>
+        </set>
+        <where>
+            menuId=#{menuId}
+        </where>
+    </update>
+   <select id="getMenuById" resultType="com.zhang.hospital.entity.Menu">
+
+       select * from menu where menuId=#{menuId}
+
+   </select>
+
+    <select id="getAllMenus" resultType="com.zhang.hospital.entity.Menu">
+        select * from menu order by sorting asc
+    </select>
+    <select id="checkNameSameLevel" resultType="com.zhang.hospital.entity.Menu"
+    parameterType="com.zhang.hospital.entity.Menu">
+        select * from menu
+        <where>
+            parentId=#{parentId} and name=#{name}
+        </where>
+
+    </select>
+    <insert id="insMenu" parameterType="com.zhang.hospital.entity.Menu">
+        insert into
+        menu(name,icon,href,perms,spread,parentId,sorting)
+        values (#{name},#{icon},#{href},#{perms},#{spread},#{parentId},#{sorting})
+    </insert>
+    <update id="updateMenu" parameterType="com.zhang.hospital.entity.Menu">
+        update menu
+        set name=#{name},icon=#{icon},href=#{href},perms=#{perms},spread=#{spread},parentId=#{parentId},
+        sorting=#{sorting}
+        <where>
+            menuId=#{menuId}
+        </where>
+    </update>
+    <select id="getMenuByParentId" resultType="com.zhang.hospital.entity.Menu">
+      select * from menu where parentId=#{menuId}
+    </select>
+    <delete id="delMenuById">
+        delete from menu where menuId=#{menuId}
+    </delete>
+</mapper>

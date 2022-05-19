@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhang.hospital.dao.AdminDao">
+    <!--因为数据库中字段和实体类属性 完全一致 所以可以用 resultType 不然就要用resultMap做一下映射-->
+    <select id="login" resultType="com.zhang.hospital.entity.Admin">
+       select * from admin
+       <where>
+           <if test="username!=null">
+               and username=#{username}
+           </if>
+           <if test="password!=null">
+               and password=#{password}
+           </if>
+       </where>
+
+    </select>
+
+    <select id="getAdminById" resultType="com.zhang.hospital.entity.Admin">
+
+        select * from admin where id=#{id}
+    </select>
+    <select id="getAdminsList" resultType="com.zhang.hospital.entity.Admin">
+        select * from admin order by id
+    </select>
+    <update id="updAdmin" parameterType="com.zhang.hospital.entity.Admin">
+        update admin
+        <set>
+            <if test="username!=null">
+                username=#{username},
+            </if>
+            <if test="password!=null">
+                password=#{password},
+            </if>
+            <if test="nickname!=null">
+                nickname=#{nickname},
+            </if>
+            <if test="sex!=null">
+                sex=#{sex},
+            </if>
+            <if test="roleId!=null">
+                roleId=#{roleId},
+            </if>
+            <if test="phone!=null">
+                phone=#{phone},
+            </if>
+            <if test="email!=null">
+                email=#{email},
+            </if>
+        </set>
+        where id=#{id}
+
+    </update>
+    <delete id="delAdminById">
+        delete from admin where id=#{id}
+    </delete>
+    <select id="getAdminByUsername" resultType="com.zhang.hospital.entity.Admin">
+        select * from admin where username=#{username}
+    </select>
+    <insert id="insAdmin" parameterType="com.zhang.hospital.entity.Admin">
+        insert into admin(username,password,nickname,sex,phone,email,roleId)
+        values (#{username},#{password},#{nickname},#{sex},#{phone},#{email},#{roleId})
+    </insert>
+</mapper>

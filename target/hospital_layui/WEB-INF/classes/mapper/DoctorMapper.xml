@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhang.hospital.dao.DoctorDao">
+
+
+
+    <resultMap id="doctorResultMap" type="com.zhang.hospital.entity.Doctor">
+        <id property="doctor_id" column="doctor_id"/>
+        <result property="username" column="username"/>
+        <result property="gender" column="gender"/>
+        <result property="birthday" column="birthday"/>
+        <result property="createTime" column="createTime"/>
+        <result property="phone" column="phone"/>
+        <result property="email" column="email"/>
+        <result property="rank" column="rank"/>
+        <result property="address" column="address"/>
+        <result property="realname" column="realname"/>
+        <result property="depart_id" column="depart_id"/>
+        <result property="photo_path" column="photo_path"/>
+        <!--多对一关联映射-->
+        <association property="depart" javaType="com.zhang.hospital.entity.Depart">
+
+            <result property="depart_name" column="depart_name"/>
+        </association>
+    </resultMap>
+
+
+
+    <insert id="insDoctor" parameterType="com.zhang.hospital.entity.Doctor">
+
+        insert  into tb_doctor(username,password,email,phone,realname,gender,photo_path,
+        roleId,createTime,address,birthday,depart_id,rank) values (#{username},#{password},#{email},#{phone},#{realname},
+        #{gender},#{photo_path},#{roleId},#{createTime},#{address},#{birthday},#{depart_id},#{rank})
+    </insert>
+
+    <select id="login" resultType="com.zhang.hospital.entity.Doctor">
+        select * from tb_doctor
+        <where>
+            <if test="username!=null">
+                and username=#{username}
+            </if>
+            <if test="password!=null">
+                and password=#{password}
+            </if>
+        </where>
+    </select>
+
+    <select id="getDoctorById" resultType="com.zhang.hospital.entity.Doctor">
+        select * from tb_doctor where doctor_id=#{doctor_id}
+    </select>
+
+
+    <update id="updateDoctor" parameterType="com.zhang.hospital.entity.Doctor">
+        update tb_doctor
+        <set>
+            <if test="username!=null">
+                username=#{username},
+            </if>
+            <if test="password!=null">
+                password=#{password},
+            </if>
+            <if test="realname!=null">
+                realname=#{realname},
+            </if>
+            <if test="email!=null">
+                email=#{email},
+            </if>
+
+            <if test="phone!=null">
+                phone=#{phone},
+            </if>
+            <if test="rank!=null">
+                rank=#{rank},
+            </if>
+            <if test="depart_id!=null">
+                depart_id=#{depart_id},
+            </if>
+            <if test="gender!=null">
+                gender=#{gender},
+            </if>
+            <if test="photo_path!=null">
+                photo_path=#{photo_path},
+            </if>
+        </set>
+        where doctor_id=#{doctor_id}
+    </update>
+
+    <select id="getDoctorByUserName" resultType="com.zhang.hospital.entity.Doctor">
+        select * from tb_doctor where username=#{username}
+    </select>
+
+
+
+    <select id="getAllDoctorList" resultMap="doctorResultMap"
+            parameterType="com.zhang.hospital.entity.DoctorSearch">
+        select distinct
+        do.doctor_id,
+        do.username,
+        do.realname,
+        do.gender,
+        do.birthday,
+        do.phone,
+        do.email,
+        do.address,
+        do.rank,
+        do.photo_path,
+        do.createTime,
+        do.depart_id,
+        de.depart_name
+        from tb_doctor as do,tb_depart as de
+        <where>
+            do.depart_id=de.depart_id
+            <if test="null != username and '' != username">
+                and username like "%"#{username}"%"
+            </if>
+            <if test="null != realname and '' != realname">
+                and realname like "%"#{realname}"%"
+            </if>
+            <if test="null != depart_id and -1 != depart_id">
+                and do.depart_id = #{depart_id}
+            </if>
+
+            <if test="null != rank and -1 != rank">
+                and rank = #{rank}
+            </if>
+            <if test="null != gender and -1 != gender">
+                and gender = #{gender}
+            </if>
+            <if test="null != create_time_s and null != create_time_e and '' != create_time_s and '' != create_time_e">
+                and createTime between #{create_time_s} and #{create_time_e}
+            </if>
+            <if test="'' != create_time_s and '' == create_time_e">
+                and createTime between #{create_time_s} and curtime()
+            </if>
+            <if test="'' == create_time_s and '' != create_time_e">
+                and createTime between '1900-01-01 00:00:00' and #{create_time_e}
+            </if>
+        </where>
+        order by doctor_id
+    </select>
+
+
+    <delete id="deleteDoctorById">
+        delete from tb_doctor where doctor_id=#{doctor_id}
+    </delete>
+
+    <select id="getDoctorByDepartId" resultType="com.zhang.hospital.entity.Doctor">
+        select * from tb_doctor where depart_id=#{depart_id}
+    </select>
+
+</mapper>

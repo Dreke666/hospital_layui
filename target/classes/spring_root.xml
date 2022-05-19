@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:contxt="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+    <!-- 扫描 service 包下面使用@Component/@Service/@Repository/@Controller 注解的类 将其实例化，放入容器中   -->
+    <contxt:component-scan base-package="com.zhang.hospital.service" />
+
+    <!--创建数据源-->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <!-- 数据库驱动 -->
+        <property name="driverClass" value="com.mysql.cj.jdbc.Driver" />
+        <!-- 数据库连接 -->
+        <property name="jdbcUrl" value="jdbc:mysql://127.0.0.1:3307/hospital_layui?characterEncoding=utf8&amp;useSSL=false&amp;serverTimezone=CTT"/>
+        <!-- 数据库用户名 -->
+        <property name="user" value="root"/>
+        <!-- 数据库密码 -->
+        <property name="password" value="123456"/>
+    </bean>
+
+    <!-- 配置mybatis  -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!-- 数据源的实例化 -->
+        <property name="dataSource" ref="dataSource"/>
+        <!-- 映射 DML 语法 -->
+        <property name="mapperLocations" value="classpath:mapper/*.xml"/>
+        <!--加载mybatis自身的配置文件-->
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+    </bean>
+    <!-- 映射 数据访问层 ( dao ) 中的接口 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+        <property name="basePackage" value="com.zhang.hospital.dao"/>
+    </bean>
+
+
+    <!-- JDBC事务管理器 -->
+    <bean id="transactionManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+          p:dataSource-ref="dataSource"/>
+
+    <!-- 启用支持annotation注解方式事务管理 -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+    <!-- 文件上传 -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- 设置上传文件的最大尺寸为10MB -->
+        <property name="maxUploadSize">
+            <value>10485760</value>
+        </property>
+        <!--设置编码，与jsp页面编码一致-->
+        <property name="defaultEncoding">
+            <value>UTF-8</value>
+        </property>
+    </bean>
+</beans>
+

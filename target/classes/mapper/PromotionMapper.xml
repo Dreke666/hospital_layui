@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhang.hospital.dao.PromotionDao">
+
+    <select id="getPromotionList" resultType="com.zhang.hospital.entity.Promotion">
+        select * from tb_promotion
+    </select>
+
+    <insert id="insPromotion" parameterType="com.zhang.hospital.entity.Promotion">
+        insert into tb_promotion(title,content,pub_date)
+        values (#{title},#{content},#{pub_date})
+
+    </insert>
+
+    <delete id="delPromotionById" parameterType="int">
+
+        delete from tb_promotion where promotion_id=#{promotion_id}
+    </delete>
+</mapper>

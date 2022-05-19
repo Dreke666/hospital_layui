@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:contxt="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <!-- 扫描 控制层 (web) 下面 @Controller 注解的类 将其实例化，放入容器中 -->
+    <contxt:component-scan base-package="com.zhang.hospital.web"/>
+    <!-- 启动 mvc 的常用注解 -->
+    <mvc:annotation-driven/>
+
+
+
+    <!--将所有的静态资源，交给 Servlet 处理-->
+    <mvc:default-servlet-handler/>
+
+    <!-- 定义Spring MVC的拦截器 -->
+
+    <mvc:interceptors>
+        <mvc:interceptor>
+
+            <mvc:mapping path="/**"/>
+
+             <!--注意是两个** 只有一个*的话
+            只能拦截http://localhost:8080/admin
+            这种http://localhost:8080/admin/js  这样的就拦截不了了-->
+            <mvc:exclude-mapping path="/promotion/promotionList" />
+            <mvc:exclude-mapping path="/promotion/getPromotionList" />
+            <!-- 自定义判断用户权限的拦截类 -->
+            <bean class="com.zhang.hospital.interceptor.AuthorizedInterceptor"/>
+
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+
+
+
+
+    <!--配置 view 解析器-->
+    <!-- 页面接受数据 -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+        <property name="prefix" value="/WEB-INF" />  <!--那样 代码中就要写全 比如：return "/jsp/admin/editAdmin";-->
+        <property name="suffix" value=".jsp" />
+        <property name="order" value="1"/>
+    </bean>
+
+</beans>

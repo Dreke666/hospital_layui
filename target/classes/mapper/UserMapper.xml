@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhang.hospital.dao.UserDao">
+
+    <select id="getAllUserList" resultType="com.zhang.hospital.entity.User"
+    parameterType="com.zhang.hospital.entity.UserSearch">
+        select * from tb_user
+        <where>
+            1=1
+            <if test="null != username and '' != username">
+                and username like "%"#{username}"%"
+            </if>
+            <if test="null != realname and '' != realname">
+                and realname like "%"#{realname}"%"
+            </if>
+            <if test="null != gender and -1 != gender">
+                and gender = #{gender}
+            </if>
+            <if test="null != status and -1 != status">
+                and status = #{status}
+            </if>
+            <if test="null != levelId and -1 != levelId">
+                and levelId = #{levelId}
+            </if>
+            <if test="null != create_time_s and null != create_time_e and '' != create_time_s and '' != create_time_e">
+                and createTime between #{create_time_s} and #{create_time_e}
+            </if>
+            <if test="'' != create_time_s and '' == create_time_e">
+                and createTime between #{create_time_s} and curtime()
+            </if>
+            <if test="'' == create_time_s and '' != create_time_e">
+                and createTime between '1900-01-01 00:00:00' and #{create_time_e}
+            </if>
+        </where>
+        order by user_id
+    </select>
+    <update id="updateUserStatusById">
+        update tb_user
+        <set>
+            <if test="status!=null">
+                status=#{status}
+            </if>
+        </set>
+        where user_id=#{user_id}
+    </update>
+
+    <delete id="deleteUserById">
+        delete from tb_user
+        where user_id=#{user_id}
+
+    </delete>
+
+    <insert id="insUser" parameterType="com.zhang.hospital.entity.User">
+
+        insert  into tb_user(username,password,email,phone,realname,gender,photo_path,
+        status,roleId,createTime,address,birthday,levelId) values (#{username},#{password},#{email},#{phone},#{realname},
+        #{gender},#{photo_path},#{status},#{roleId},#{createTime},#{address},#{birthday},#{levelId})
+    </insert>
+
+    <select id="login" resultType="com.zhang.hospital.entity.User">
+        select * from tb_user
+        <where>
+            <if test="username!=null">
+                and username=#{username}
+            </if>
+            <if test="password!=null">
+                and password=#{password}
+            </if>
+        </where>
+    </select>
+    <select id="getUserById" resultType="com.zhang.hospital.entity.User">
+        select * from tb_user where user_id=#{user_id}
+    </select>
+    <select id="getUserByUserName" resultType="com.zhang.hospital.entity.User">
+        select * from tb_user where username=#{username}
+    </select>
+    <update id="updateUser" parameterType="com.zhang.hospital.entity.User">
+            update tb_user
+            <set>
+                <if test="username!=null">
+                    username=#{username},
+                </if>
+                <if test="password!=null">
+                    password=#{password},
+                </if>
+                <if test="realname!=null">
+                    realname=#{realname},
+                </if>
+                <if test="email!=null">
+                    email=#{email},
+                </if>
+
+                <if test="phone!=null">
+                    phone=#{phone},
+                </if>
+                <if test="levelId!=null">
+                    levelId=#{levelId},
+                </if>
+                <if test="gender!=null">
+                    gender=#{gender},
+                </if>
+                <if test="photo_path!=null">
+                    photo_path=#{photo_path},
+                </if>
+            </set>
+            where user_id=#{user_id}
+    </update>
+
+
+
+</mapper>

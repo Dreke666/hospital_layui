@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <settings>
+        <!-- 是否启用缓存 -->
+        <setting name="cacheEnabled" value="true" />
+        <!-- 是否启用延迟加载 -->
+        <setting name="lazyLoadingEnabled" value="true"/>
+        <!-- [当对象使用延迟加载时 属性的加载取决于能被引用到的那些延迟属性,否则,按需加载(需要的是时候才去加载)] - -->
+        <setting name="aggressiveLazyLoading" value="true"/>
+        <!-- 允许JDBC支持生成的建，需要适合驱动 -->
+        <setting name="useGeneratedKeys" value="true" />
+        <!-- 默认执行器，默认SIMPLE无特别之处；REUSE重用预处理语句；BATCH重用语句和批量更新 -->
+        <setting name="defaultExecutorType" value="REUSE" />
+        <!-- 设置等待一个数据库的响应时间 -->
+        <setting name="defaultStatementTimeout" value="25000"/>
+        <!--输出select 等调试语句-->
+        <setting name="logImpl" value="LOG4J"/>
+
+    </settings>
+
+
+    <plugins>
+        <!-- com.github.pagehelper为PageHelper类所在包名 -->
+        <plugin interceptor="com.github.pagehelper.PageHelper">
+            <property name="dialect" value="mysql"/>
+
+        </plugin>
+    </plugins>
+</configuration>
